@@ -30,6 +30,15 @@ public class HeapView<T extends Comparable<T>> extends TableView<T> {
         populateData();
     }
 
+    @Override
+    public void refresh() {
+        populateData();
+    }
+
+    public int getLength(){
+        return binaryHeap.getSize();
+    }
+
     private void initializeColumns() {
         Class<?> itemClass = binaryHeap.getItemClass();
         java.lang.reflect.Field[] fields = itemClass.getDeclaredFields();

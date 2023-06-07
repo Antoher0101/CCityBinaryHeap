@@ -3,6 +3,8 @@ package com.antoher.oop.models;
 import com.antoher.oop.annotations.ColumnName;
 
 public class CCity implements Comparable<CCity> {
+    @ColumnName(name = "ИД")
+    private int id;
 
     @ColumnName(name = "Население")
     private int population;
@@ -10,7 +12,7 @@ public class CCity implements Comparable<CCity> {
     @ColumnName(name = "Площадь")
     private double area;
 
-    @ColumnName(name = "Название")
+    @ColumnName(name = "Город")
     private String name;
 
     @ColumnName(name = "Есть аэропорт")
@@ -21,6 +23,17 @@ public class CCity implements Comparable<CCity> {
         this.area = area;
         this.name = name;
         this.hasAirport = hasAirport;
+    }
+
+    public CCity() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getPopulation() {

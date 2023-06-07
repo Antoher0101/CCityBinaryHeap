@@ -1,14 +1,15 @@
 package com.antoher.oop.models;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 @SuppressWarnings("unchecked")
 public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
     final Class<?> itemClass;
+    private List<Consumer<BinaryHeapChangeEvent<T>>> listeners = new ArrayList<>();
 
     private static final int DEFAULT_CAPACITY = 10;
     private T[] heap;
@@ -23,6 +24,16 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
         size = 0;
 
         this.itemClass = itemClass;
+    }
+
+    public void addListener(Consumer<BinaryHeapChangeEvent<T>> listener) {
+        listeners.add(listener);
+    }
+
+    private void notifyListeners(BinaryHeapChangeEvent<T> event) {
+        for (Consumer<BinaryHeapChangeEvent<T>> listener : listeners) {
+            listener.accept(event);
+        }
     }
 
     public BinaryHeap(BinaryHeap<T> other) {
@@ -42,6 +53,9 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
             index /= 2;
         }
         heap[index] = item;
+
+        BinaryHeapChangeEvent<T> event = new BinaryHeapChangeEvent<>(this, BinaryHeapChangeType.ADD, item);
+        notifyListeners(event);
     }
 
     public T deleteMin() {
@@ -55,6 +69,9 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
         if (size > 0 && size < heap.length / 4) {
             resize(heap.length / 2);
         }
+
+        BinaryHeapChangeEvent<T> event = new BinaryHeapChangeEvent<>(this, BinaryHeapChangeType.REMOVE, min);
+        notifyListeners(event);
         return min;
     }
 
