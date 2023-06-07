@@ -8,10 +8,7 @@ import com.antoher.oop.views.HeapView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -30,6 +27,7 @@ import static com.antoher.oop.data.IO.FileUtils.getFileExtension;
 
 public class MainController {
 
+    public static final String ERROR_COLOR = "-fx-border-color: #FFCCCC;";
     @FXML
     HeapView<CCity> heapView;
 //    @FXML
@@ -40,16 +38,24 @@ public class MainController {
 
     BinaryHeap<CCity> cities = new BinaryHeap<>(CCity.class);
 
+    @FXML
+    private TextField area;
+    @FXML
+    private TextField cityName;
+    @FXML
+    private TextField population;
+    @FXML
+    private CheckBox hasAirport;
+    @FXML
+    private Button addCity;
+
     public MainController() {
 
     }
 
     @FXML
     void initialize() {
-        cities.addListener(c -> {
-            heapView.refresh();
-            heapSize.setText(String.valueOf(heapView.getLength()));
-        });
+        initListeners();
         heapView.setBinaryHeap(cities);
     }
 
@@ -86,6 +92,67 @@ public class MainController {
         event.consume();
     }
 
+    public void handleAddCityButtonAction() {
+        boolean isValid = true;
+
+        if (area.getText().isEmpty()) {
+            area.setStyle(ERROR_COLOR);
+            isValid = false;
+        } else {
+            area.setStyle("");
+        }
+
+        if (cityName.getText().isEmpty()) {
+            cityName.setStyle(ERROR_COLOR);
+            isValid = false;
+        } else {
+            cityName.setStyle("");
+        }
+
+        if (population.getText().isEmpty()) {
+            population.setStyle(ERROR_COLOR);
+            isValid = false;
+        } else {
+            population.setStyle("");
+        }
+
+        if (isValid) {
+            CCity city = new CCity(Integer.parseInt(population.getText()),
+                    Double.parseDouble(area.getText()),
+                    cityName.getText(),
+                    hasAirport.isSelected());
+            cities.insert(city);
+            clearFields();
+        }
+    }
+
+    private void clearFields() {
+        cityName.clear();
+        population.clear();
+        area.clear();
+        hasAirport.setSelected(false);
+    }
+
+    private void initListeners() {
+        heapView.setSortPolicy(event -> false);
+        cities.addListener(c -> {
+            heapView.refresh();
+            heapSize.setText(String.valueOf(heapView.getLength()));
+        });
+
+        area.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*(\\.\\d*)?")) {
+                area.setText(oldValue);
+            }
+        });
+
+        population.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                population.setText(oldValue);
+            }
+        });
+    }
+
     private boolean readFile(File file) {
         String extension = getFileExtension(file.getName());
         if (extension.equalsIgnoreCase("csv") || extension.equalsIgnoreCase("txt")) {
@@ -102,8 +169,7 @@ public class MainController {
                         "Файл не соответствует шаблону класса: " + CCity.class.getName());
                 return false;
             }
-        }
-        else return false;
+        } else return false;
         return true;
     }
 
