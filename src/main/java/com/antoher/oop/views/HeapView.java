@@ -47,10 +47,10 @@ public class HeapView<T extends Comparable<T>> extends TableView<T> {
             if (field.isAnnotationPresent(ColumnName.class)) {
                 ColumnName annotation = field.getAnnotation(ColumnName.class);
                 String columnName = annotation.name();
-
+                boolean collapse = annotation.collapsed();
                 TableColumn<T, Object> column = new TableColumn<>(columnName);
                 column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
-
+                column.setVisible(!collapse);
                 getColumns().add(column);
             }
         }
