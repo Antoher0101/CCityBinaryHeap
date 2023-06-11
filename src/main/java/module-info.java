@@ -5,6 +5,7 @@ module com.antoher.oop {
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires org.apache.commons.csv;
+    requires de.jensd.fx.glyphs.fontawesome;
 
     opens com.antoher.oop to javafx.fxml;
     exports com.antoher.oop;

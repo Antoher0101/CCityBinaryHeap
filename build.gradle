@@ -40,6 +40,7 @@ dependencies {
         exclude(group: 'org.openjfx')
     }
     implementation('org.apache.commons:commons-csv:1.10.0')
+    implementation('de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2')
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }

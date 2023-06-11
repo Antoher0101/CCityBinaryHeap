@@ -15,6 +15,8 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
     private T[] heap;
     private int size;
 
+    private RefreshMode refreshMode = RefreshMode.ALWAYS;
+
     public BinaryHeap(Class<T> itemClass) {
         this(itemClass, DEFAULT_CAPACITY);
     }
@@ -31,9 +33,19 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
     }
 
     private void notifyListeners(BinaryHeapChangeEvent<T> event) {
-        for (Consumer<BinaryHeapChangeEvent<T>> listener : listeners) {
-            listener.accept(event);
+        if (refreshMode.equals(RefreshMode.ALWAYS)) {
+            for (Consumer<BinaryHeapChangeEvent<T>> listener : listeners) {
+                listener.accept(event);
+            }
         }
+    }
+
+    public RefreshMode getRefreshMode() {
+        return refreshMode;
+    }
+
+    public void setRefreshMode(RefreshMode refreshMode) {
+        this.refreshMode = refreshMode;
     }
 
     public BinaryHeap(BinaryHeap<T> other) {
@@ -43,16 +55,41 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
         System.arraycopy(other.heap, 0, heap, 0, size);
     }
 
+    public void resortHeap() {
+        if (size <= 1) {
+            return;
+        }
+
+        T[] tempHeap = (T[]) new Comparable[size];
+        System.arraycopy(heap, 1, tempHeap, 0, size);
+
+        clear();
+        for (T item : tempHeap) {
+            insert(item);
+        }
+    }
+
+    public void reverseHeap() {
+        if (size <= 1) {
+            return;
+        }
+
+        T[] reversedHeap = (T[]) new Comparable[size + 1];
+
+        for (int i = 1; i <= size; i++) {
+            reversedHeap[i] = heap[size - i + 1];
+        }
+        heap = reversedHeap;
+    }
+
     public void insert(T item) {
         if (size == heap.length - 1) {
             resize(2 * heap.length);
         }
         int index = ++size;
-        while (index > 1 && item.compareTo(heap[index / 2]) < 0) {
-            heap[index] = heap[index / 2];
-            index /= 2;
-        }
+
         heap[index] = item;
+        percolateUp(index - 1);
 
         BinaryHeapChangeEvent<T> event = new BinaryHeapChangeEvent<>(this, BinaryHeapChangeType.ADD, item);
         notifyListeners(event);
@@ -93,6 +130,36 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
         heap[index] = temp;
     }
 
+    private void percolateUp(int index) {
+        T item = heap[index];
+        while (index > 1 && item.compareTo(heap[index / 2]) < 0) {
+            heap[index] = heap[index / 2];
+            index /= 2;
+        }
+        heap[index] = item;
+    }
+
+    public void update(T oldItem, T newItem) {
+        int index = findItemIndex(oldItem);
+        if (index == -1) {
+            throw new IllegalArgumentException("Элемент не найден в пирамиде.");
+        }
+
+        heap[index] = newItem;
+
+        BinaryHeapChangeEvent<T> event = new BinaryHeapChangeEvent<>(this, BinaryHeapChangeType.UPDATE, newItem);
+        notifyListeners(event);
+    }
+
+    private int findItemIndex(T item) {
+        for (int i = 1; i <= size; i++) {
+            if (heap[i].equals(item)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public boolean isEmpty() {
         return size == 0;
     }
@@ -102,7 +169,7 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
     }
 
     public T[] getHeap() {
-        return Arrays.copyOfRange(heap,1, size + 1);
+        return Arrays.copyOfRange(heap, 1, size + 1);
     }
 
     private void resize(int capacity) {
@@ -114,6 +181,33 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
     public void clear() {
         heap = (T[]) new Comparable[DEFAULT_CAPACITY];
         size = 0;
+    }
+
+    public void delete(T selectedElement) {
+        int index = findItemIndex(selectedElement);
+        if (index == -1) {
+            throw new NoSuchElementException("Элемент не найден в куче");
+        }
+
+        T lastElement = heap[size];
+        heap[index] = lastElement;
+        heap[size] = null;
+        size--;
+
+        if (index > 1 && lastElement.compareTo(heap[index / 2]) < 0) {
+            percolateUp(index);
+        } else {
+            percolateDown(index);
+        }
+
+        BinaryHeapChangeEvent<T> event = new BinaryHeapChangeEvent<>(this, BinaryHeapChangeType.REMOVE, selectedElement);
+        notifyListeners(event);
+    }
+
+
+    public enum RefreshMode {
+        ALWAYS,
+        NEVER
     }
 
     @Override
@@ -139,6 +233,44 @@ public class BinaryHeap<T extends Comparable<T>> implements Iterable<T> {
                 throw new NoSuchElementException();
             }
             return heap[currentIndex++];
+        }
+    }
+
+    public static <T extends Comparable<T>> void heapify(T[] array) {
+        int n = array.length;
+
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapifyDown(array, n, i);
+        }
+
+        for (int i = n - 1; i > 0; i--) {
+            T temp = array[0];
+            array[0] = array[i];
+            array[i] = temp;
+
+            heapifyDown(array, i, 0);
+        }
+    }
+
+    private static <T extends Comparable<T>> void heapifyDown(T[] heap, int heapSize, int parentIndex) {
+        int largestIndex = parentIndex;
+        int leftChildIndex = 2 * parentIndex + 1;
+        int rightChildIndex = 2 * parentIndex + 2;
+
+        if (leftChildIndex < heapSize && heap[leftChildIndex].compareTo(heap[largestIndex]) > 0) {
+            largestIndex = leftChildIndex;
+        }
+
+        if (rightChildIndex < heapSize && heap[rightChildIndex].compareTo(heap[largestIndex]) > 0) {
+            largestIndex = rightChildIndex;
+        }
+
+        if (largestIndex != parentIndex) {
+            T temp = heap[parentIndex];
+            heap[parentIndex] = heap[largestIndex];
+            heap[largestIndex] = temp;
+
+            heapifyDown(heap, heapSize, largestIndex);
         }
     }
 }

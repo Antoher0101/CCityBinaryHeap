@@ -8,9 +8,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.util.Collections;
+
 public class HeapView<T extends Comparable<T>> extends TableView<T> {
 
     private BinaryHeap<T> binaryHeap;
+
+    private boolean rawHeapMode = true;
+    private boolean ascendingSort = true;
 
     public HeapView() {
         super();
@@ -35,6 +40,34 @@ public class HeapView<T extends Comparable<T>> extends TableView<T> {
         populateData();
     }
 
+    public boolean isRawHeapMode() {
+        return rawHeapMode;
+    }
+
+    public void setRawHeapMode(boolean rawHeapMode) {
+        this.rawHeapMode = rawHeapMode;
+        refresh();
+    }
+
+    public boolean isAscendingSort() {
+        return ascendingSort;
+    }
+
+    public void setAscendingSort(boolean ascendingSort) {
+        this.ascendingSort = ascendingSort;
+        refresh();
+    }
+
+    public void resortHeap() {
+        binaryHeap.resortHeap();
+        refresh();
+    }
+
+    public void reverseHeap() {
+        binaryHeap.reverseHeap();
+        refresh();
+    }
+
     public int getLength(){
         return binaryHeap.getSize();
     }
@@ -56,10 +89,19 @@ public class HeapView<T extends Comparable<T>> extends TableView<T> {
         }
     }
 
+    public void updateItem(T oldItem, T newItem) {
+        binaryHeap.update(oldItem, newItem);
+    }
+
     private void populateData() {
         T[] elements = binaryHeap.getHeap();
-        ObservableList<T> observableList = FXCollections.observableArrayList(elements);
+        if(!isRawHeapMode()){
+            BinaryHeap.heapify(elements);
+        }
 
+        ObservableList<T> observableList = FXCollections.observableArrayList(elements);
+        if(!isAscendingSort())
+            Collections.reverse(observableList);
         setItems(observableList);
     }
 }

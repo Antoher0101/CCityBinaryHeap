@@ -2,8 +2,11 @@ package com.antoher.oop.models;
 
 import com.antoher.oop.annotations.ColumnName;
 
+import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class CCity implements Comparable<CCity> {
-    @ColumnName(name = "ИД")
+    @ColumnName(name = "ИД", collapsed = true)
     private int id;
 
     @ColumnName(name = "Население")
@@ -18,14 +21,34 @@ public class CCity implements Comparable<CCity> {
     @ColumnName(name = "Есть аэропорт")
     private boolean hasAirport;
 
+    private static String sortColumn;
+
+    public static String getSortColumn() {
+        return sortColumn;
+    }
+
+    public static void setSortColumn(String col) {
+        sortColumn = col;
+    }
+
     public CCity(int population, double area, String name, boolean hasAirport) {
         this.population = population;
         this.area = area;
         this.name = name;
         this.hasAirport = hasAirport;
+        id = new AtomicInteger().incrementAndGet();
+    }
+
+    public CCity(CCity other) {
+        this.id = other.getId();
+        this.population = other.getPopulation();
+        this.area = other.getArea();
+        this.name = other.getName();
+        this.hasAirport = other.isHasAirport();
     }
 
     public CCity() {
+        id = new AtomicInteger().incrementAndGet();
     }
 
     public int getId() {
@@ -70,11 +93,30 @@ public class CCity implements Comparable<CCity> {
 
     @Override
     public int compareTo(CCity o) {
-        if (population < o.population)
-            return -1;
-        else if (population > o.population) {
-            return 1;
+        if (sortColumn == null) {
+            return Integer.compare(this.id, o.id);
         }
+
+        if (sortColumn.equals(getColumnName("name")))
+            return this.name.compareTo(o.name);
+        if (sortColumn.equals(getColumnName("population")))
+            return Integer.compare(this.population, o.population);
+        if (sortColumn.equals(getColumnName("area")))
+            return Double.compare(this.area, o.area);
+        if (sortColumn.equals(getColumnName("hasAirport")))
+            return Boolean.compare(this.hasAirport, o.hasAirport);
         return 0;
+    }
+
+    private String getColumnName(String fieldName) {
+        String columnName = "";
+        try {
+            Field field = getClass().getDeclaredField(fieldName);
+            ColumnName annotation = field.getAnnotation(ColumnName.class);
+            columnName = annotation.name();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return columnName;
     }
 }

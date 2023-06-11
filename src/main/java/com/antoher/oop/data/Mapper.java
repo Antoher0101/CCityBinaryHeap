@@ -5,6 +5,7 @@ import com.antoher.oop.annotations.ColumnName;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Mapper {
@@ -30,6 +31,24 @@ public class Mapper {
                 }
             }
         return object;
+    }
+
+    public static Map<String, Object> objectToMap(Object object) throws IllegalAccessException {
+        Map<String, Object> data = new HashMap<>();
+
+        Class<?> clazz = object.getClass();
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(ColumnName.class)) {
+                ColumnName columnName = field.getAnnotation(ColumnName.class);
+                String fieldName = columnName.name();
+
+                field.setAccessible(true);
+                Object value = field.get(object);
+                data.put(fieldName, value);
+            }
+        }
+
+        return data;
     }
 
     private static Method findSetter(Class<?> clazz, String fieldName, Class<?> fieldType) {

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -12,109 +14,159 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
 <?import com.antoher.oop.views.HeapView?>
-<VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.antoher.oop.controllers.MainController">
-   <children>
-      <MenuBar>
-        <menus>
-          <Menu mnemonicParsing="false" text="Файл">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.antoher.oop.controllers.MainController">
+    <children>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="Файл">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#openFileWindow" text="Открыть" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Сохранить" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveAsFile" text="Сохранить как" />
+                        <MenuItem mnemonicParsing="false" onAction="#closeWindow" text="Закрыть" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <SplitPane dividerPositions="0.3110367892976589" VBox.vgrow="ALWAYS">
             <items>
-                  <MenuItem mnemonicParsing="false" onAction="#openFileWindow" text="Открыть" />
-              <MenuItem mnemonicParsing="false" onAction="#closeWindow" text="Закрыть" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <SplitPane dividerPositions="0.3110367892976589" VBox.vgrow="ALWAYS">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="99.0">
-               <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <Accordion>
-                          <panes>
-                            <TitledPane animated="false" text="Добавить">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="351.0" prefWidth="176.0">
-                                       <children>
-                                          <VBox layoutX="21.7" layoutY="21.7" prefHeight="263.0" prefWidth="155.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <children>
-                                                <TextField fx:id="cityName" promptText="Название города">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="99.0">
+                    <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Accordion VBox.vgrow="ALWAYS">
+                                    <panes>
+                                        <TitledPane animated="false" text="Добавить">
+                                            <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="351.0" prefWidth="176.0">
+                                                    <children>
+                                                        <VBox layoutX="21.7" layoutY="21.7" prefHeight="263.0" prefWidth="155.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <children>
+                                                                <TextField fx:id="cityName" promptText="Название города">
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="10.0" />
+                                                                    </VBox.margin>
+                                                                </TextField>
+                                                                <TextField fx:id="population" promptText="Население">
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="10.0" />
+                                                                    </VBox.margin>
+                                                                </TextField>
+                                                                <TextField fx:id="area" promptText="Площадь">
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="10.0" />
+                                                                    </VBox.margin>
+                                                                </TextField>
+                                                                <CheckBox fx:id="hasAirport" mnemonicParsing="false" text="Есть аэропорт" />
+                                                                <Pane prefHeight="0.0" prefWidth="155.0" VBox.vgrow="ALWAYS" />
+                                                                <Button fx:id="addCity" alignment="TOP_LEFT" contentDisplay="TOP" mnemonicParsing="false" onAction="#handleAddCityButtonAction" text="Добавить" VBox.vgrow="NEVER" />
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </AnchorPane>
+                                            </content>
+                                        </TitledPane>
+                                        <TitledPane fx:id="changePane" animated="false" text="Изменить">
+                                            <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                    <children>
+                                                        <VBox prefHeight="263.0" prefWidth="155.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <children>
+                                                                <TextField fx:id="cityNameChange" promptText="Название города">
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="10.0" />
+                                                                    </VBox.margin>
+                                                                </TextField>
+                                                                <TextField fx:id="populationChange" promptText="Население">
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="10.0" />
+                                                                    </VBox.margin>
+                                                                </TextField>
+                                                                <TextField fx:id="areaChange" promptText="Площадь">
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="10.0" />
+                                                                    </VBox.margin>
+                                                                </TextField>
+                                                                <CheckBox fx:id="hasAirportChange" mnemonicParsing="false" text="Есть аэропорт" />
+                                                                <Pane prefHeight="0.0" prefWidth="155.0" VBox.vgrow="ALWAYS" />
+                                                <AnchorPane>
+                                                   <children>
+                                                      <Button alignment="CENTER_RIGHT" contentDisplay="TEXT_ONLY" mnemonicParsing="false" onAction="#handleDeleteCityButtonAction" text="Удалить" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                      <Button fx:id="changeCity" contentDisplay="TOP" layoutY="25.0" mnemonicParsing="false" onAction="#handleChangeCityButtonAction" text="Изменить" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </AnchorPane>
+                                            </content>
+                                        </TitledPane>
+                                        <TitledPane animated="false" text="Формат таблицы">
+                                            <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                    <children>
+                                                        <VBox layoutX="13.0" layoutY="52.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <children>
+                                                <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
+                                                   <children>
+                                                                      <ComboBox fx:id="sortComboBox" prefHeight="25.0" prefWidth="200.0" />
+                                                                      <ToggleButton fx:id="sortMode" mnemonicParsing="false" textAlignment="CENTER">
+                                                         <graphic>
+                                                            <FontAwesomeIconView fx:id="faSort" glyphName="SORT_AMOUNT_ASC" />
+                                                         </graphic>
+                                                         <HBox.margin>
+                                                            <Insets left="5.0" />
+                                                         </HBox.margin>
+                                                                      </ToggleButton>
+                                                   </children>
+                                                </HBox>
+                                                <CheckBox fx:id="rawHeapMode" mnemonicParsing="false" selected="true" text="RAW DATA">
                                                    <VBox.margin>
-                                                      <Insets bottom="10.0" />
+                                                      <Insets top="10.0" />
                                                    </VBox.margin>
-                                                </TextField>
-                                                <TextField fx:id="population" promptText="Население">
-                                                   <VBox.margin>
-                                                      <Insets bottom="10.0" />
-                                                   </VBox.margin>
-                                                </TextField>
-                                                <TextField fx:id="area" promptText="Площадь">
-                                                   <VBox.margin>
-                                                      <Insets bottom="10.0" />
-                                                   </VBox.margin>
-                                                </TextField>
-                                                <CheckBox fx:id="hasAirport" mnemonicParsing="false" text="Есть аэропорт" />
-                                                <Pane prefHeight="0.0" prefWidth="155.0" VBox.vgrow="ALWAYS" />
-                                                <Button fx:id="addCity" alignment="TOP_LEFT" contentDisplay="TOP" mnemonicParsing="false" onAction="#handleAddCityButtonAction" text="Добавить" VBox.vgrow="NEVER" />
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </AnchorPane>
-                              </content>
-                            </TitledPane>
-                            <TitledPane animated="false" text="Изменить">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                              </content>
-                            </TitledPane>
-                            <TitledPane animated="false" text="Формат таблицы">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                              </content>
-                            </TitledPane>
-                          </panes>
-                        </Accordion>
-                     </children>
-                  </VBox>
-               </children></AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="477.0">
-               <children>
-                  <VBox prefHeight="598.0" prefWidth="616.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <HeapView fx:id="heapView" onDragDropped="#onDragDropped" onDragExited="#onDragExited" onDragOver="#onDragOver" prefHeight="593.0" prefWidth="616.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy></HeapView>
-                        <HBox fillHeight="false" maxHeight="18.0" prefHeight="35.0" prefWidth="399.0" VBox.vgrow="ALWAYS">
-                           <children>
-                              <Label text="Кол: " />
-                              <Label fx:id="heapSize" maxHeight="35.0" />
-                           </children>
-                           <padding>
-                              <Insets left="5.0" right="5.0" />
-                           </padding>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
-   </children>
+                                                </CheckBox>
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </AnchorPane>
+                                            </content>
+                                        </TitledPane>
+                                    </panes>
+                                </Accordion>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="477.0">
+                    <children>
+                        <VBox prefHeight="598.0" prefWidth="616.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <HeapView fx:id="heapView" onDragDropped="#onDragDropped" onDragExited="#onDragExited" onDragOver="#onDragOver" prefHeight="593.0" prefWidth="616.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </HeapView>
+                                <HBox fillHeight="false" maxHeight="18.0" prefHeight="35.0" prefWidth="399.0" VBox.vgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Кол: " />
+                                        <Label fx:id="heapSize" maxHeight="35.0" />
+                                    </children>
+                                    <padding>
+                                        <Insets left="5.0" right="5.0" />
+                                    </padding>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
 </VBox>
