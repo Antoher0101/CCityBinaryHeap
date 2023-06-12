@@ -21,6 +21,12 @@ public class CCity implements Comparable<CCity> {
     @ColumnName(name = "Есть аэропорт")
     private boolean hasAirport;
 
+    private static int totalAirports;
+
+    static {
+        totalAirports = 0;
+    }
+
     private static String sortColumn;
 
     public static String getSortColumn() {
@@ -32,19 +38,23 @@ public class CCity implements Comparable<CCity> {
     }
 
     public CCity(int population, double area, String name, boolean hasAirport) {
+        this();
         this.population = population;
         this.area = area;
         this.name = name;
         this.hasAirport = hasAirport;
-        id = new AtomicInteger().incrementAndGet();
+        if (hasAirport) {
+            totalAirports++;
+        }
     }
 
     public CCity(CCity other) {
+        this();
         this.id = other.getId();
         this.population = other.getPopulation();
         this.area = other.getArea();
         this.name = other.getName();
-        this.hasAirport = other.isHasAirport();
+        setHasAirport(other.isHasAirport());
     }
 
     public CCity() {
@@ -88,7 +98,16 @@ public class CCity implements Comparable<CCity> {
     }
 
     public void setHasAirport(boolean hasAirport) {
+        if (hasAirport && !this.hasAirport) {
+            totalAirports++;
+        } else if (!hasAirport && this.hasAirport) {
+            totalAirports--;
+        }
         this.hasAirport = hasAirport;
+    }
+
+    public static int getTotalAirports() {
+        return totalAirports;
     }
 
     @Override

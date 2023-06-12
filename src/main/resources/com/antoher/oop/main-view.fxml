@@ -157,6 +157,12 @@
                                     <children>
                                         <Label text="Кол: " />
                                         <Label fx:id="heapSize" maxHeight="35.0" />
+                              <Label alignment="TOP_LEFT" maxHeight="35.0" text="А/п:">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="airportCount" alignment="TOP_LEFT" maxHeight="35.0" />
                                     </children>
                                     <padding>
                                         <Insets left="5.0" right="5.0" />

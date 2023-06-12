@@ -47,6 +47,8 @@ public class MainController {
 
     @FXML
     Label heapSize;
+    @FXML
+    Label airportCount;
 
     BinaryHeap<CCity> cities = new BinaryHeap<>(CCity.class);
 
@@ -208,6 +210,7 @@ public class MainController {
         cities.addListener(c -> {
             heapView.refresh();
             heapSize.setText(String.valueOf(heapView.getLength()));
+            airportCount.setText(String.valueOf(CCity.getTotalAirports()));
         });
 
         heapView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -266,6 +269,7 @@ public class MainController {
             } finally {
                 heapView.refresh();
                 heapSize.setText(String.valueOf(heapView.getLength()));
+                airportCount.setText(String.valueOf(CCity.getTotalAirports()));
                 cities.setRefreshMode(BinaryHeap.RefreshMode.ALWAYS);
             }
         } else {
